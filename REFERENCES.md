@@ -1,0 +1,1 @@
+- The idea to use genetic algorithms was partly inspired from [https://github.com/NDresevic/timetable-generator](https://github.com/NDresevic/timetable-generator)
