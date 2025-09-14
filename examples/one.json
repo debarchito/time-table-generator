@@ -1,11 +1,13 @@
 {
   "rooms": [
     { "id": "R1", "capacity": 30, "type": "lecture" },
-    { "id": "R2", "capacity": 50, "type": "lab" }
+    { "id": "R2", "capacity": 50, "type": "lecture" },
+    { "id": "R3", "capacity": 60, "type": "lecture" },
+    { "id": "R4", "capacity": 70, "type": "lecture" }
   ],
   "timeslots": {
     "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
-    "slots_per_day": ["09:00", "11:00", "13:00", "15:00"],
+    "slots_per_day": ["09:00", "11:00", "13:00", "15:00", "17:00"],
     "breaks": [
       { "day": "Mon", "time": "13:00" },
       { "day": "Fri", "time": "15:00" }

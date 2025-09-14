@@ -1,0 +1,13 @@
+event_id,subject,teacher,room,day,time
+Phys301__3,Phys301,T3,R1,Mon,09:00
+Phys301__2,Phys301,T3,R1,Mon,11:00
+Phys301__1,Phys301,T3,R1,Mon,15:00
+Hist201__2,Hist201,T1,R2,Mon,09:00
+Hist201__1,Hist201,T1,R2,Mon,11:00
+CS102__4,CS102,T2,R3,Mon,09:00
+CS102__3,CS102,T2,R3,Mon,11:00
+CS102__2,CS102,T2,R2,Mon,15:00
+CS102__1,CS102,T2,R1,Mon,17:00
+Math101__3,Math101,T1,R3,Mon,15:00
+Math101__2,Math101,T1,R2,Mon,17:00
+Math101__1,Math101,T1,R1,Tue,09:00
