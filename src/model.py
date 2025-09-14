@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Any
-import polars as pl
+from typing import Any
 import json
+import polars as pl
 
 
 @dataclass
@@ -10,8 +10,8 @@ class Model:
     rooms: pl.DataFrame
     teachers: pl.DataFrame
     subjects: pl.DataFrame
-    constraints: Dict[str, Any]
-    timeslots: Dict[str, pl.DataFrame]
+    constraints: dict[str, Any]
+    timeslots: dict[str, pl.DataFrame]
 
     @classmethod
     def from_json(cls, file: Path) -> "Model":
