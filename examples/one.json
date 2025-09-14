@@ -1,0 +1,70 @@
+{
+  "rooms": [
+    { "id": "R1", "capacity": 30, "type": "lecture" },
+    { "id": "R2", "capacity": 50, "type": "lab" }
+  ],
+  "timeslots": {
+    "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    "slots_per_day": ["09:00", "11:00", "13:00", "15:00"],
+    "breaks": [
+      { "day": "Mon", "time": "13:00" },
+      { "day": "Fri", "time": "15:00" }
+    ]
+  },
+  "teachers": [
+    {
+      "id": "T1",
+      "name": "Dr. Smith",
+      "subjects": ["Math101", "Hist201"],
+      "min_classes": 2,
+      "max_classes": 6
+    },
+    {
+      "id": "T2",
+      "name": "Dr. Lee",
+      "subjects": ["CS102"],
+      "min_classes": 3,
+      "max_classes": 8
+    },
+    {
+      "id": "T3",
+      "name": "Dr. Adams",
+      "subjects": ["Phys301"],
+      "min_classes": 2,
+      "max_classes": 5
+    }
+  ],
+  "subjects": [
+    {
+      "id": "Math101",
+      "name": "Mathematics I",
+      "credits": 3,
+      "classes_per_week": 3
+    },
+    {
+      "id": "CS102",
+      "name": "Computer Science II",
+      "credits": 4,
+      "classes_per_week": 4
+    },
+    {
+      "id": "Hist201",
+      "name": "World History",
+      "credits": 2,
+      "classes_per_week": 2
+    },
+    {
+      "id": "Phys301",
+      "name": "Physics III",
+      "credits": 3,
+      "classes_per_week": 3
+    }
+  ],
+  "constraints": {
+    "hard": {
+      "no_teacher_conflict": true,
+      "respect_room_capacity": true,
+      "one_event_per_room_timeslot": true
+    }
+  }
+}
