@@ -22,10 +22,6 @@
               pkgs.python313Packages.venvShellHook
               pkgs.uv
             ];
-            LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
-              pkgs.stdenv.cc.cc
-              pkgs.zlib
-            ];
           };
         };
     };
