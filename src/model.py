@@ -10,8 +10,9 @@ class Model:
     rooms: pl.DataFrame
     teachers: pl.DataFrame
     subjects: pl.DataFrame
+    groups: pl.DataFrame
     constraints: dict[str, Any]
-    timeslots: dict[str, pl.DataFrame]
+    slots: dict[str, pl.DataFrame]
 
     @classmethod
     def from_json(cls, file: Path) -> "Model":
@@ -21,32 +22,35 @@ class Model:
         rooms = pl.DataFrame(data["rooms"])
         teachers = pl.DataFrame(data["teachers"])
         subjects = pl.DataFrame(data["subjects"])
+        groups = pl.DataFrame(data.get("groups", []))
         constraints = data["constraints"]
 
-        timeslots = {
-            "days": pl.DataFrame(data["timeslots"]["days"]),
-            "slots_per_day": pl.DataFrame(data["timeslots"]["slots_per_day"]),
-            "breaks": pl.DataFrame(data["timeslots"].get("breaks", [])),
+        slots = {
+            "days": pl.DataFrame({"day": data["slots"]["days"]}),
+            "times": pl.DataFrame({"time": data["slots"]["times"]}),
+            "breaks": pl.DataFrame(data["slots"].get("breaks", [])),
         }
 
         return cls(
-            rooms=rooms,
-            teachers=teachers,
-            subjects=subjects,
-            constraints=constraints,
-            timeslots=timeslots,
+            rooms,
+            teachers,
+            subjects,
+            groups,
+            constraints,
+            slots,
         )
 
     def to_json(self, file: Path) -> None:
         data = {
             "rooms": self.rooms.to_dicts(),
-            "timeslots": {
-                "days": self.timeslots["days"].to_series().to_list(),
-                "slots_per_day": self.timeslots["slots_per_day"].to_series().to_list(),
-                "breaks": self.timeslots["breaks"].to_dicts(),
+            "slots": {
+                "days": self.slots["days"]["day"].to_list(),
+                "times": self.slots["times"]["time"].to_list(),
+                "breaks": self.slots["breaks"].to_dicts(),
             },
             "teachers": self.teachers.to_dicts(),
             "subjects": self.subjects.to_dicts(),
+            "groups": self.groups.to_dicts(),
             "constraints": self.constraints,
         }
 
