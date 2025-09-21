@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "A simple time table generator"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
- "polars>=1.33.1",
-]
+dependencies = ["polars>=1.33.1"]
 
 [dependency-groups]
 dev = ["basedpyright>=1.31.4", "ruff>=0.12.12"]
