@@ -44,7 +44,7 @@ uv sync --active
 Now, run an example using:
 
 ```fish
-uv run -m src.solve ../examples/one.json
+uv run -m algorithm.solve ../examples/one.json
 ```
 
-The results will be generated under `src/solutions/one`.
+The results will be generated under `algorithm/solutions/one`.

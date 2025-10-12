@@ -81,6 +81,8 @@ if __name__ == "__main__":
 
     total_conflicts = sum(len(conflicts[key]) for key in conflicts)
     if total_conflicts > 0:
-        print(f"[!] {total_conflicts} conflicts detected! Check `conflicts.json` for reports.")
+        print(
+            f"[!] {total_conflicts} conflicts detected! Check `conflicts.json` for reports."
+        )
     else:
         print("[+] No conflicts detected in the timetable(s).")
