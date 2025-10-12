@@ -11,7 +11,8 @@ class Solver:
         self.times = model.slots["times"]["time"].to_list()
         self.breaks_raw = model.slots["breaks"].to_dicts()
         self.invalid_start_times = self._compute_invalid_start_times()
-        self.max_consec = model.constraints.get("maximum_consecutive_classes", 2)
+        self.max_consec = model.modifiers.get("maximum_consecutive_classes", 2)
+        self.max_slots_per_group_per_day = model.modifiers.get("maximum_slot_per_group_per_day", None)
 
         self.rooms = model.rooms
         self.teachers = model.teachers
@@ -19,6 +20,8 @@ class Solver:
         self.groups = model.groups
 
         self.room_types = {r["id"]: r["type"] for r in self.rooms.to_dicts()}
+        self.room_capacity = {r["id"]: r.get("capacity", 50) for r in self.rooms.to_dicts()}
+        self.group_size = {g["id"]: g.get("size", 30) for g in self.groups.to_dicts()}
         self.lab_for = {
             r["id"]: set(r.get("for", []))
             for r in self.rooms.to_dicts()
@@ -82,6 +85,12 @@ class Solver:
     def _no_break(self, day, time):
         return time not in self.invalid_start_times.get(day, set())
 
+    def _capacity_sufficient(self, room_id, group_ids):
+        """Check if room capacity is sufficient for the given groups"""
+        room_cap = self.room_capacity.get(room_id, 50)
+        total_students = sum(self.group_size.get(group_id, 30) for group_id in group_ids)
+        return total_students <= room_cap
+
     def _max_consecutive_ok(self, teacher_id, day, time, schedule):
         day_classes = [
             c for c in schedule if c["teacher"] == teacher_id and c["day"] == day
@@ -98,6 +107,16 @@ class Solver:
             else:
                 current_cons = 1
         return max_cons <= self.max_consec
+
+    def _max_slots_per_group_per_day_ok(self, group_id, day, schedule):
+        if self.max_slots_per_group_per_day is None:
+            return True
+
+        day_classes = [
+            c for c in schedule
+            if c["day"] == day and group_id in c["groups"]
+        ]
+        return len(day_classes) < self.max_slots_per_group_per_day
 
     def solve(self) -> pl.DataFrame:
         schedule = []
@@ -128,12 +147,16 @@ class Solver:
                         continue
                     if not self._max_consecutive_ok(teacher_id, day, time, schedule):
                         continue
+                    if not self._max_slots_per_group_per_day_ok(group_id, day, schedule):
+                        continue
 
                     for room in self.rooms.to_dicts():
                         room_id = room["id"]
                         if not self._valid_room_for_subject(room_id, subject_id):
                             continue
                         if not self._room_available(room_id, day, time, schedule):
+                            continue
+                        if not self._capacity_sufficient(room_id, [group_id]):
                             continue
 
                         schedule.append(
