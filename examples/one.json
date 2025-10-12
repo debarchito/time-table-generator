@@ -1,40 +1,46 @@
 {
   "rooms": [
-    { "id": "Le1", "type": "lecture" },
-    { "id": "Le2", "type": "lecture" },
-    { "id": "Le3", "type": "lecture" },
-    { "id": "Le4", "type": "lecture" },
-    { "id": "Le5", "type": "lecture" },
-    { "id": "Le6", "type": "lecture" },
+    { "id": "Le1", "type": "lecture", "capacity": 20 },
+    { "id": "Le2", "type": "lecture", "capacity": 30 },
+    { "id": "Le3", "type": "lecture", "capacity": 50 },
+    { "id": "Le4", "type": "lecture", "capacity": 45 },
+    { "id": "Le5", "type": "lecture", "capacity": 75 },
+    { "id": "Le6", "type": "lecture", "capacity": 90 },
     {
       "id": "La1",
       "type": "lab",
-      "for": ["Phys101", "Phys201", "Math101"]
+      "for": ["Phys101", "Phys201", "Math101"],
+      "capacity": 30
     },
     {
       "id": "La2",
       "type": "lab",
-      "for": ["Phys102", "Math102"]
+      "for": ["Phys102", "Math102"],
+      "capacity": 25
     },
     {
       "id": "La3",
       "type": "lab",
-      "for": ["CS101", "CS201"]
+      "for": ["CS101", "CS201"],
+      "capacity": 35
     },
     {
       "id": "La4",
       "type": "lab",
-      "for": ["CS102", "CS202"]
+      "for": ["CS102", "CS202"],
+      "capacity": 35
     },
     {
       "id": "La5",
       "type": "lab",
-      "for": ["Chem101", "Chem102"]
+      "for": ["Chem101", "Chem102"],
+      "capacity": 28
     },
     {
       "id": "La6",
       "type": "lab",
-      "for": ["Bio101", "Bio102"]
+      "for": ["Bio101", "Bio102"],
+      "capacity": 32
     }
   ],
   "slots": {
@@ -50,9 +56,7 @@
       "15:00",
       "16:00"
     ],
-    "breaks": [
-      { "day": "*", "time": "12:00" }
-    ]
+    "breaks": [{ "day": "*", "time": "12:00" }]
   },
   "subjects": [
     {
@@ -152,22 +156,33 @@
     {
       "id": "G1",
       "name": "Engineering Year 1 - Section A",
-      "subjects": ["Phys101", "Phys102", "Math101", "Math102", "CS101", "CS102"]
+      "subjects": [
+        "Phys101",
+        "Phys102",
+        "Math101",
+        "Math102",
+        "CS101",
+        "CS102"
+      ],
+      "size": 28
     },
     {
       "id": "G2",
       "name": "Engineering Year 1 - Section B",
-      "subjects": ["Phys101", "Math101", "CS101", "CS102", "Eng101"]
+      "subjects": ["Phys101", "Math101", "CS101", "CS102", "Eng101"],
+      "size": 32
     },
     {
       "id": "G3",
       "name": "Computer Science Year 2",
-      "subjects": ["CS201", "CS202", "Math101", "Math102"]
+      "subjects": ["CS201", "CS202", "Math101", "Math102"],
+      "size": 25
     },
     {
       "id": "G4",
       "name": "Pre-Med Year 1",
-      "subjects": ["Chem101", "Chem102", "Bio101", "Bio102", "Math101"]
+      "subjects": ["Chem101", "Chem102", "Bio101", "Bio102", "Math101"],
+      "size": 30
     }
   ],
   "constraints": {

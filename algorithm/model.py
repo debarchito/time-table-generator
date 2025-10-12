@@ -20,10 +20,20 @@ class Model:
         with open(file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        rooms = pl.DataFrame(data["rooms"])
+        rooms_data = data["rooms"]
+        for room in rooms_data:
+            if "capacity" not in room:
+                room["capacity"] = 50
+
+        groups_data = data.get("groups", [])
+        for group in groups_data:
+            if "size" not in group:
+                group["size"] = 0
+
+        rooms = pl.DataFrame(rooms_data)
         teachers = pl.DataFrame(data["teachers"])
         subjects = pl.DataFrame(data["subjects"])
-        groups = pl.DataFrame(data.get("groups", []))
+        groups = pl.DataFrame(groups_data)
         constraints = data["constraints"]
 
         slots = {
@@ -186,7 +196,7 @@ class Model:
             json.dump(data, f, indent=2)
 
     @classmethod
-    def get_summary(cls, df: pl.DataFrame) -> dict[str, Any]:
+    def get_summary(cls, df: pl.DataFrame, rooms_df: pl.DataFrame = None, groups_df: pl.DataFrame = None) -> dict[str, Any]:
         summary = {
             "total_classes": df.height,
             "groups": cls.get_available_groups(df),
@@ -206,6 +216,18 @@ class Model:
             "classes_per_room": df.group_by("Room").len().sort("Room").to_dicts(),
             "classes_per_day": df.group_by("Day").len().sort("Day").to_dicts(),
         }
+
+        if rooms_df is not None:
+            summary["room_capacities"] = {
+                room["id"]: room.get("capacity", 50)
+                for room in rooms_df.to_dicts()
+            }
+
+        if groups_df is not None:
+            summary["group_sizes"] = {
+                group["id"]: group.get("size", 0)
+                for group in groups_df.to_dicts()
+            }
 
         return summary
 
@@ -267,3 +289,37 @@ class Model:
                 )
 
         return conflicts
+
+    @classmethod
+    def detect_capacity_violations(cls, df: pl.DataFrame, rooms_df: pl.DataFrame, groups_df: pl.DataFrame) -> list[dict[str, Any]]:
+        """
+        Detect cases where group size exceeds room capacity
+        """
+        violations = []
+
+        room_capacity = {room["id"]: room.get("capacity", 50) for room in rooms_df.to_dicts()}
+        group_size = {group["id"]: group.get("size", 0) for group in groups_df.to_dicts()}
+
+        for row in df.to_dicts():
+            room_id = row["Room"]
+            groups_str = row["Groups"]
+
+            group_ids = [g.strip() for g in groups_str.split(",")]
+
+            total_students = sum(group_size.get(group_id, 0) for group_id in group_ids)
+            room_cap = room_capacity.get(room_id, 50)
+
+            if total_students > room_cap:
+                violations.append({
+                    "day": row["Day"],
+                    "time": row["Time"],
+                    "subject": row["Subject"],
+                    "teacher": row["Teacher"],
+                    "room": room_id,
+                    "room_capacity": room_cap,
+                    "groups": group_ids,
+                    "total_students": total_students,
+                    "overflow": total_students - room_cap
+                })
+
+        return violations

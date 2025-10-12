@@ -70,7 +70,7 @@ if __name__ == "__main__":
         json_file.write_text(json.dumps(dicts, indent=2))
     print("[+] Wrote timetables for rooms as both CSV and JSON.")
 
-    summary = Model.get_summary(solution)
+    summary = Model.get_summary(solution, model.rooms, model.groups)
     summary_file = solution_base / "summary.json"
     summary_file.write_text(json.dumps(summary, indent=2))
     print("[+] Wrote summary as JSON.")
@@ -79,10 +79,23 @@ if __name__ == "__main__":
     conflicts_file = solution_base / "conflicts.json"
     conflicts_file.write_text(json.dumps(conflicts, indent=2))
 
+    capacity_violations = Model.detect_capacity_violations(solution, model.rooms, model.groups)
+    capacity_violations_file = solution_base / "capacity_violations.json"
+    capacity_violations_file.write_text(json.dumps(capacity_violations, indent=2))
+
     total_conflicts = sum(len(conflicts[key]) for key in conflicts)
+    total_capacity_violations = len(capacity_violations)
+
     if total_conflicts > 0:
         print(
             f"[!] {total_conflicts} conflicts detected! Check `conflicts.json` for reports."
         )
     else:
         print("[+] No conflicts detected in the timetable(s).")
+
+    if total_capacity_violations > 0:
+        print(
+            f"[!] {total_capacity_violations} capacity violations detected! Check `capacity_violations.json` for reports."
+        )
+    else:
+        print("[+] No capacity violations detected in the timetable(s).")

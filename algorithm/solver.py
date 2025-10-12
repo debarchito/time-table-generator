@@ -19,6 +19,8 @@ class Solver:
         self.groups = model.groups
 
         self.room_types = {r["id"]: r["type"] for r in self.rooms.to_dicts()}
+        self.room_capacity = {r["id"]: r.get("capacity", 50) for r in self.rooms.to_dicts()}
+        self.group_size = {g["id"]: g.get("size", 30) for g in self.groups.to_dicts()}
         self.lab_for = {
             r["id"]: set(r.get("for", []))
             for r in self.rooms.to_dicts()
@@ -82,6 +84,12 @@ class Solver:
     def _no_break(self, day, time):
         return time not in self.invalid_start_times.get(day, set())
 
+    def _capacity_sufficient(self, room_id, group_ids):
+        """Check if room capacity is sufficient for the given groups"""
+        room_cap = self.room_capacity.get(room_id, 50)
+        total_students = sum(self.group_size.get(group_id, 30) for group_id in group_ids)
+        return total_students <= room_cap
+
     def _max_consecutive_ok(self, teacher_id, day, time, schedule):
         day_classes = [
             c for c in schedule if c["teacher"] == teacher_id and c["day"] == day
@@ -134,6 +142,8 @@ class Solver:
                         if not self._valid_room_for_subject(room_id, subject_id):
                             continue
                         if not self._room_available(room_id, day, time, schedule):
+                            continue
+                        if not self._capacity_sufficient(room_id, [group_id]):
                             continue
 
                         schedule.append(
