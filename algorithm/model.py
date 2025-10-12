@@ -12,7 +12,7 @@ class Model:
     teachers: pl.DataFrame
     subjects: pl.DataFrame
     groups: pl.DataFrame
-    constraints: dict[str, Any]
+    modifiers: dict[str, Any]
     slots: dict[str, pl.DataFrame]
 
     @classmethod
@@ -23,18 +23,18 @@ class Model:
         rooms_data = data["rooms"]
         for room in rooms_data:
             if "capacity" not in room:
-                room["capacity"] = 50
+                room["capacity"] = data["modifiers"]["default_room_capacity"] or 50
 
         groups_data = data.get("groups", [])
         for group in groups_data:
             if "size" not in group:
-                group["size"] = 0
+                group["size"] = data["modifiers"]["default_group_size"] or 50
 
         rooms = pl.DataFrame(rooms_data)
         teachers = pl.DataFrame(data["teachers"])
         subjects = pl.DataFrame(data["subjects"])
         groups = pl.DataFrame(groups_data)
-        constraints = data["constraints"]
+        modifiers = data["modifiers"]
 
         slots = {
             "days": pl.DataFrame({"day": data["slots"]["days"]}),
@@ -47,7 +47,7 @@ class Model:
             teachers,
             subjects,
             groups,
-            constraints,
+            modifiers,
             slots,
         )
 
@@ -189,7 +189,7 @@ class Model:
             "teachers": self.teachers.to_dicts(),
             "subjects": self.subjects.to_dicts(),
             "groups": self.groups.to_dicts(),
-            "constraints": self.constraints,
+            "modifiers": self.modifiers,
         }
 
         with open(file, "w", encoding="utf-8") as f:

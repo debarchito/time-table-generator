@@ -11,7 +11,7 @@ class Solver:
         self.times = model.slots["times"]["time"].to_list()
         self.breaks_raw = model.slots["breaks"].to_dicts()
         self.invalid_start_times = self._compute_invalid_start_times()
-        self.max_consec = model.constraints.get("maximum_consecutive_classes", 2)
+        self.max_consec = model.modifiers.get("maximum_consecutive_classes", 2)
 
         self.rooms = model.rooms
         self.teachers = model.teachers
