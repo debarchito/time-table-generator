@@ -41,10 +41,10 @@ After activation, install the dependencies using:
 uv sync --active
 ```
 
-Now, run the project using:
+Now, run an example using:
 
 ```fish
-uv run -m src.main
+uv run -m src.solve ../examples/one.json
 ```
 
-The result(s) will be generated inside `src/solution`.
+The results will be generated under `src/solutions/one`.
