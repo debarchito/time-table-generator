@@ -12,6 +12,7 @@ class Solver:
         self.breaks_raw = model.slots["breaks"].to_dicts()
         self.invalid_start_times = self._compute_invalid_start_times()
         self.max_consec = model.modifiers.get("maximum_consecutive_classes", 2)
+        self.max_slots_per_group_per_day = model.modifiers.get("maximum_slot_per_group_per_day", None)
 
         self.rooms = model.rooms
         self.teachers = model.teachers
@@ -107,6 +108,16 @@ class Solver:
                 current_cons = 1
         return max_cons <= self.max_consec
 
+    def _max_slots_per_group_per_day_ok(self, group_id, day, schedule):
+        if self.max_slots_per_group_per_day is None:
+            return True
+
+        day_classes = [
+            c for c in schedule
+            if c["day"] == day and group_id in c["groups"]
+        ]
+        return len(day_classes) < self.max_slots_per_group_per_day
+
     def solve(self) -> pl.DataFrame:
         schedule = []
 
@@ -135,6 +146,8 @@ class Solver:
                     if not self._group_available(group_id, day, time, schedule):
                         continue
                     if not self._max_consecutive_ok(teacher_id, day, time, schedule):
+                        continue
+                    if not self._max_slots_per_group_per_day_ok(group_id, day, schedule):
                         continue
 
                     for room in self.rooms.to_dicts():

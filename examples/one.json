@@ -187,6 +187,7 @@
   ],
   "modifiers": {
     "maximum_consecutive_classes": 2,
+    "maximum_slot_per_group_per_day": 2,
     "default_room_capacity": 50,
     "default_group_size": 0
   }
